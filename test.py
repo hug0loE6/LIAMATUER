@@ -14,7 +14,7 @@ driver = webdriver.Chrome()
 listeURLEexo = []
 
 driver.get("http://195.220.87.134/#activity=exercises")
-time.sleep(4)
+time.sleep(3)
 try:
     tokeninput = driver.find_element(By.ID, "login-token-input")
     tokeninput.clear()
@@ -24,7 +24,7 @@ except:
     print("Erreur connexion")
     driver.quit()
 try:
-    time.sleep(4)
+    time.sleep(2)
     listeexos = []
     for l in driver.find_elements(By.CSS_SELECTOR, "#learnocaml-main-exercise-list > ul") : 
         listeexos.append(l)
@@ -40,13 +40,18 @@ except:
     print("zebi")
     driver.quit()
 #j'ai tout les url la
-test = listeURLEexo[0]
+
 try:
-    driver.get(test)
-    time.sleep(5)
+    driver.get(listeURLEexo[0])
+    time.sleep(4)
     iframe = driver.find_element(By.CSS_SELECTOR, "iframe")
     driver.switch_to.frame(iframe)
-    buddy = driver.find_element(By.CSS_SELECTOR, "body")
-    print(buddy.text)
+    ennonce = driver.find_element(By.CSS_SELECTOR, "body").text
+    #la tu fait le print avec ennonce avec l'iaaaaaaa la reponse est stocké dans codeRep
+    codeRep = "let bidon: int->int = function x -> x * 2 ;;"
+    input = driver.find_element(By.CLASS_NAME, "ace_text-input")
+    input.send_keys(codeRep)
+    
 finally:
+    time.sleep(5)
     driver.quit()
