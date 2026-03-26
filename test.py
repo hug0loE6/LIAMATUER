@@ -9,12 +9,15 @@ if len(sys.argv) != 2:
     print("Respectre la syntaxe suivante : python test.py <token>")
     sys.exit(1)
 
-token = sys.argv[1]
-driver = webdriver.Chrome()
+#token = sys.argv[1]
+token = "XST-44Y-PA3-ZX3"
+
+options = webdriver.FirefoxOptions()
+driver = webdriver.Firefox(options=options)
+driver.implicitly_wait(4)
 listeURLEexo = []
 
 driver.get("http://195.220.87.134/#activity=exercises")
-time.sleep(3)
 try:
     tokeninput = driver.find_element(By.ID, "login-token-input")
     tokeninput.clear()
@@ -24,7 +27,6 @@ except:
     print("Erreur connexion")
     driver.quit()
 try:
-    time.sleep(2)
     listeexos = []
     for l in driver.find_elements(By.CSS_SELECTOR, "#learnocaml-main-exercise-list > ul") : 
         listeexos.append(l)
@@ -43,15 +45,35 @@ except:
 
 try:
     driver.get(listeURLEexo[0])
-    time.sleep(4)
     iframe = driver.find_element(By.CSS_SELECTOR, "iframe")
     driver.switch_to.frame(iframe)
     ennonce = driver.find_element(By.CSS_SELECTOR, "body").text
+    driver.switch_to.default_content()
     #la tu fait le print avec ennonce avec l'iaaaaaaa la reponse est stocké dans codeRep
+
+    #La c'est l'input du code
+    toutediteur = driver.find_element(By.ID, "learnocaml-exo-tabs")
+    contenuEditeur = toutediteur.find_elements(By.XPATH, "./*")    
+    zoneCode = contenuEditeur[0].find_elements(By.XPATH, "./*")
+    tabCode = zoneCode[1].find_elements(By.XPATH, "./*")
     codeRep = "let bidon: int->int = function x -> x * 2 ;;"
-    input = driver.find_element(By.CLASS_NAME, "ace_text-input")
+    input = tabCode[0]
+    input.send_keys(Keys.CONTROL + "a")
+    input.send_keys(Keys.BACKSPACE)
     input.send_keys(codeRep)
+
+    #La c'est l'input de graduation
+    toolbar = driver.find_element(By.ID, "learnocaml-exo-toolbar")
+    contenuTool = toolbar.find_elements(By.XPATH, "./*")
+    contenuTool[5].click()
+    
+    a = 0
+    for e in contenuTool :
+        print(a)
+        print(e.get_attribute("outerHTML"))
+        a+=1
+
     
 finally:
-    time.sleep(5)
+    time.sleep(10)
     driver.quit()
