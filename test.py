@@ -49,19 +49,22 @@ except:
 for URLexo in listeURLEexo: 
     try:
         driver.get(URLexo)
-        print(f"{URLexo} : I'm starting")
+        #print(f"{URLexo} : I'm starting")
         
         iframe = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "iframe")))
         driver.switch_to.frame(iframe)
-        ennonce = driver.find_element(By.CSS_SELECTOR, "body").text
+        ennonce = driver.find_element(By.CSS_SELECTOR, "body").text #ENNONCE
         driver.switch_to.default_content()
 
         #la tu fait le print avec ennonce avec l'iaaaaaaa la reponse est stocké dans codeRep
         codeRep = "let bidon: int->int = function x -> x * 2 ;;"
 
         #La c'est l'input du code
+        time.sleep(0.5)
         toutediteur = wait.until(EC.presence_of_element_located((By.ID, "learnocaml-exo-tabs")))
         input = toutediteur.find_element(By.CSS_SELECTOR, "textarea, .ace_text-input")
+
+        #print(f"{URLexo} : I got the input")
         #contenuEditeur = toutediteur.find_elements(By.XPATH, "./*")    
         #zoneCode = contenuEditeur[0].find_elements(By.XPATH, "./*")
         #tabCode = zoneCode[1].find_elements(By.XPATH, "./*")
@@ -71,7 +74,8 @@ for URLexo in listeURLEexo:
         input.send_keys(codeRep)
 
         #La c'est l'input de graduation
-        toolbar = driver.find_element(By.ID, "learnocaml-exo-toolbar")
+        time.sleep(0.5)
+        toolbar = wait.until(EC.presence_of_element_located((By.ID, "learnocaml-exo-toolbar")))
         grade = toolbar.find_element(By.XPATH, ".//button[descendant::span[contains(text(), 'Grade')]]")
         grade.click()
         #a = 0
@@ -79,17 +83,17 @@ for URLexo in listeURLEexo:
         #    print(a)
         #    print(e.get_attribute("outerHTML"))
         #    a+=1
-        print(f"{URLexo} : I finished")
-
-        buttonres = driver.find_element(By.ID, "learnocaml-exo-button-report")
-        buttonres.click()
-        result = driver.find_element(By.CSS_SELECTOR, "span.title.clickable")
-        print(result.text)
-
+        #print(f"{URLexo} : I finished")
+        time.sleep(0.5)
+        success = False
+        try :
+            driver.find_element(By.CLASS_NAME, "success")
+            success = True
+        except :
+            success = False
+        #print(f"{URLexo} : success = {success}")
         #temporaire juste parce que la je fait 1 fois
-        driver.quit()
-        exit()
     except:
-        print(f"OLOLALALA Y4A UN PB a{URLexo}")
+        #print(f"OLOLALALA Y4A UN PB a{URLexo}")
         driver.quit()
 driver.quit()

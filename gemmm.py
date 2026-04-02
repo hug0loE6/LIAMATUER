@@ -1,33 +1,31 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
 import time
 
-driver = webdriver.Chrome()
 
-try:
-    # 1. Aller sur Gemini (Attention : demande une connexion Google en réel)
-    driver.get("https://gemini.google.com")
-    time.sleep(50)  # Attendre que la page charge (ajuster si nécessaire)
 
-    # 2. Attendre que l'élément soit présent et cliquable
-    # On utilise un Sélecteur CSS pour la classe 'ql-editor'
-    wait = WebDriverWait(driver, 10)
-    prompt_box = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".ql-editor")))
+options = webdriver.FirefoxOptions()
+driver = webdriver.Firefox(options=options)
+driver.implicitly_wait(4)
+wait = WebDriverWait(driver, 6)
+driver.get("https://chat.openai.com")
+try :
+    time.sleep(5)  # attendre le chargement (à remplacer par WebDriverWait)
+    textarea = wait.until(EC.presence_of_element_located((By.TAG_NAME, "textarea")))
+    actions = ActionChains(driver)
+    actions.move_to_element(textarea).perform()
+    actions.send_keys("Donne un code en python simple").send_keys(Keys.ENTER).perform()
 
-    # 3. Cliquer pour donner le focus (important sur les div éditables)
-    prompt_box.click()
+    time.sleep(5) 
 
-    # 4. Taper le texte
-    prompt_box.send_keys("Bonjour Gemini, comment vas-tu ?")
-
-    # 5. Appuyer sur Entrée
-    prompt_box.send_keys(Keys.ENTER)
-
-    # Laisser le temps de voir la réponse commencer
-    time.sleep(5)
-
+    copy_button = driver.find_element(By.CSS_SELECTOR, 'button[aria-label="Copy code"]')
+    copy_button.click()
 finally:
+    print("ZEGEGGGGGGGGGGGGGGGGGGG")
+    time.sleep(5)
     driver.quit()
