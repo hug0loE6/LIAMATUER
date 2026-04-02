@@ -13,6 +13,7 @@ wait = WebDriverWait(driver, 15)
 
 try:
     driver.get("https://gemini.google.com")
+    exit()
     aa = "Il s'agit d'écrire la définition OCaml de la fonction bidon, qui étant donné un entier, calcule son double."
     cookie = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button[aria-label="Accept all"]')))
     cookie.click()

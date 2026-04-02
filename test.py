@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import InvalidArgumentException
 import time
+import pyperclip
 import subprocess
 import sys
 
@@ -29,21 +30,32 @@ except InvalidArgumentException as e :
     options.binary_location = result.stdout
     driver = webdriver.Firefox(options=options)
 driver.implicitly_wait(4)
-wait = WebDriverWait(driver, 6)
+waitsympa = WebDriverWait(driver, 6)
+waitgiminicegroslard = WebDriverWait(driver, 60)
 listeURLEexo = []
 
 driver.get("http://195.220.87.134/#activity=exercises")
+driver.execute_script("window.open('https://gemini.google.com');")
+tabs = driver.window_handles
+#gemini into accept cookie into casse toi
+driver.switch_to.window(tabs[1])
+cookie = waitsympa.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button[aria-label="Accept all"]')))
+cookie.click()
+driver.close()
+driver.switch_to.window(tabs[0])
+time.sleep(0.5)
 try:
-    tokeninput = driver.find_element(By.ID, "login-token-input")
+    tokeninput = waitsympa.until(EC.presence_of_element_located((By.ID, "login-token-input")))
     tokeninput.clear()
     tokeninput.send_keys(token)
     driver.find_element(By.ID, "login-connect-button").click()
 except:
     print("Erreur connexion")
     driver.quit()
+    exit()
 try:
     listeexos = []
-    for l in driver.find_elements(By.CSS_SELECTOR, "#learnocaml-main-exercise-list > ul") : 
+    for l in waitsympa.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "#learnocaml-main-exercise-list > ul"))) : 
         listeexos.append(l)
     i = 0
     for l in listeexos : 
@@ -56,6 +68,7 @@ try:
 except:
     print("zebi")
     driver.quit()
+    exit()
 #j'ai tout les url la
 
 for URLexo in listeURLEexo: 
@@ -63,31 +76,38 @@ for URLexo in listeURLEexo:
         driver.get(URLexo)
         #print(f"{URLexo} : I'm starting")
         
-        iframe = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "iframe")))
+        iframe = waitsympa.until(EC.presence_of_element_located((By.CSS_SELECTOR, "iframe")))
         driver.switch_to.frame(iframe)
         ennonce = driver.find_element(By.CSS_SELECTOR, "body").text #ENNONCE
         driver.switch_to.default_content()
 
-        #la tu fait le print avec ennonce avec l'iaaaaaaa la reponse est stocké dans codeRep
-        codeRep = "let bidon: int->int = function x -> x * 2 ;;"
-
+        driver.execute_script("window.open('https://gemini.google.com');")
+        tabs = driver.window_handles
+        driver.switch_to.window(tabs[1])
+        ennonce = f"""Pour ta réponse au prompt, je veux seulement un bloc de code, et pas de contenu a coté.
+        "Prompt : En ocaml faire l'exo suivant :
+        {ennonce}"""
+        prompt_box = waitsympa.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".ql-editor")))
+        prompt_box.click()
+        prompt_box.send_keys(ennonce)
+        prompt_box.send_keys(Keys.ENTER)
+        copy_button = waitgiminicegroslard.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button[aria-label="Copy code"]')))
+        copy_button.click()
+        codeRep = pyperclip.paste()
+        driver.close()
+        driver.switch_to.window(tabs[0])
         #La c'est l'input du code
         time.sleep(0.5)
-        toutediteur = wait.until(EC.presence_of_element_located((By.ID, "learnocaml-exo-tabs")))
+        toutediteur = waitsympa.until(EC.presence_of_element_located((By.ID, "learnocaml-exo-tabs")))
         input = toutediteur.find_element(By.CSS_SELECTOR, "textarea, .ace_text-input")
 
-        #print(f"{URLexo} : I got the input")
-        #contenuEditeur = toutediteur.find_elements(By.XPATH, "./*")    
-        #zoneCode = contenuEditeur[0].find_elements(By.XPATH, "./*")
-        #tabCode = zoneCode[1].find_elements(By.XPATH, "./*")
-        #input = tabCode[0]
         input.send_keys(Keys.CONTROL + "a")
         input.send_keys(Keys.BACKSPACE)
         input.send_keys(codeRep)
 
         #La c'est l'input de graduation
         time.sleep(0.5)
-        toolbar = wait.until(EC.presence_of_element_located((By.ID, "learnocaml-exo-toolbar")))
+        toolbar = waitsympa.until(EC.presence_of_element_located((By.ID, "learnocaml-exo-toolbar")))
         grade = toolbar.find_element(By.XPATH, ".//button[descendant::span[contains(text(), 'Grade')]]")
         grade.click()
         #a = 0
