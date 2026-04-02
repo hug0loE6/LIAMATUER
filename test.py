@@ -76,7 +76,10 @@ for URLexo in listeURLEexo:
         #La c'est l'input de graduation
         time.sleep(0.5)
         toolbar = wait.until(EC.presence_of_element_located((By.ID, "learnocaml-exo-toolbar")))
-        grade = toolbar.find_element(By.XPATH, ".//button[descendant::span[contains(text(), 'Grade')]]")
+        try :
+            grade = toolbar.find_element(By.XPATH, ".//button[descendant::span[contains(text(), 'Grade')]]")
+        except :
+            grade = toolbar.find_element(By.XPATH, ".//button[descendant::span[contains(text(), 'Noter')]]")
         grade.click()
         #a = 0
         #for e in contenuTool :
@@ -91,9 +94,9 @@ for URLexo in listeURLEexo:
             success = True
         except :
             success = False
-        #print(f"{URLexo} : success = {success}")
-        #temporaire juste parce que la je fait 1 fois
+        print(f"{URLexo} : success = {success}")
     except:
-        #print(f"OLOLALALA Y4A UN PB a{URLexo}")
+        print(f"OLOLALALA Y4A UN PB a{URLexo}")
         driver.quit()
+
 driver.quit()
