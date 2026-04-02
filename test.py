@@ -15,6 +15,7 @@ if len(sys.argv) != 2:
 token = "XST-44Y-PA3-ZX3"
 
 options = webdriver.FirefoxOptions()
+options.set_preference("intl.accept_languages", "en-US,en")
 driver = webdriver.Firefox(options=options)
 driver.implicitly_wait(4)
 wait = WebDriverWait(driver, 6)
@@ -76,10 +77,7 @@ for URLexo in listeURLEexo:
         #La c'est l'input de graduation
         time.sleep(0.5)
         toolbar = wait.until(EC.presence_of_element_located((By.ID, "learnocaml-exo-toolbar")))
-        try :
-            grade = toolbar.find_element(By.XPATH, ".//button[descendant::span[contains(text(), 'Grade')]]")
-        except :
-            grade = toolbar.find_element(By.XPATH, ".//button[descendant::span[contains(text(), 'Noter')]]")
+        grade = toolbar.find_element(By.XPATH, ".//button[descendant::span[contains(text(), 'Grade')]]")
         grade.click()
         #a = 0
         #for e in contenuTool :
