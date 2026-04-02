@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import InvalidArgumentException
 import time
 import subprocess
 import sys
@@ -20,6 +21,7 @@ options.set_preference("intl.accept_languages", "en-US,en")
 try :
     driver = webdriver.Firefox(options=options)
 except InvalidArgumentException as e :
+    print(e)
     result = subprocess.run(
     ["snap", "info", "firefox"],
     capture_output=True,
