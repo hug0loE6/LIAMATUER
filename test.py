@@ -4,6 +4,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+import subprocess
 import sys
 
 
@@ -16,7 +17,15 @@ token = "XST-44Y-PA3-ZX3"
 
 options = webdriver.FirefoxOptions()
 options.set_preference("intl.accept_languages", "en-US,en")
-driver = webdriver.Firefox(options=options)
+try :
+    driver = webdriver.Firefox(options=options)
+except InvalidArgumentException as e :
+    result = subprocess.run(
+    ["snap", "info", "firefox"],
+    capture_output=True,
+    text=True)
+    options.binary_location = result.stdout
+    driver = webdriver.Firefox(options=options)
 driver.implicitly_wait(4)
 wait = WebDriverWait(driver, 6)
 listeURLEexo = []
